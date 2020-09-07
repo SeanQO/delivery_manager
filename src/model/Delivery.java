@@ -2,7 +2,13 @@ package model;
 
 import java.sql.Date;
 
+
 public class Delivery {
+	private final static int  REQUESTED = 0 ; 
+	private final static int  IN_PROCESS = 1 ; 
+	private final static int  SENT = 2 ; 
+	private final static int  DELIVERED = 3 ; 
+	private String orderState;
 	private int deliveryCode;
 	private Date dateAndTime;
 	private int clientId;
@@ -11,11 +17,34 @@ public class Delivery {
 	private int[] quantities;
 	
 	public Delivery(int clientId, String restaurantNit, Product[] products, int[] quantities) {
-		super();
 		this.clientId = clientId;
 		this.restaurantNit = restaurantNit;
 		this.products = products;
 		this.quantities = quantities;
+	}
+
+	public String getOrderState() {
+		return orderState;
+	}
+
+	public void setOrderState(int orderStateNumber) {
+		switch (orderStateNumber) {
+		case REQUESTED:
+			orderState = "Requested";
+			break;
+			
+		case IN_PROCESS:
+			orderState = "In process";
+			break;
+
+		case SENT:
+			orderState = "Sent";
+			break;
+			
+		case DELIVERED:
+			orderState = "Delivered";
+			break;
+		}
 	}
 
 	public void setProducts(Product[] products) {

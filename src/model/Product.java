@@ -8,7 +8,6 @@ public class Product {
 	private String restaurantNit;
 	
 	public Product(int code, String name, String description, double price, String restaurantNit) {
-		super();
 		this.code = code;
 		this.name = name;
 		this.description = description;
