@@ -16,6 +16,18 @@ public class Product {
 		this.restaurantNit = restaurantNit;
 	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public void setPrice(double price) {
+		this.price = price;
+	}
+
 	public int getCode() {
 		return code;
 	}

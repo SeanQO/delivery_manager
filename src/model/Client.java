@@ -15,6 +15,26 @@ public class Client {
 		this.adress = adress;
 	}
 	
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public void setIdNumber(String idNumber) {
+		this.idNumber = idNumber;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public void setAdress(String adress) {
+		this.adress = adress;
+	}
+
 	public String getType() {
 		return type;
 	}

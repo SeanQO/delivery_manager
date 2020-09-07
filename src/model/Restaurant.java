@@ -9,6 +9,18 @@ public class Restaurant {
 		
 	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setNit(String nit) {
+		this.nit = nit;
+	}
+	
+	public void setAdminName(String adminName) {
+		this.adminName = adminName;
+	}
+
 	public String getName() {
 		return name;
 	}
