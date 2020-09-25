@@ -1,69 +1,62 @@
 package model;
 
-import java.sql.Date;
-
-
+import java.util.Date;
+import java.util.ArrayList;
 public class Delivery {
-	private final static int  REQUESTED = 0 ; 
-	private final static int  IN_PROCESS = 1 ; 
-	private final static int  SENT = 2 ; 
-	private final static int  DELIVERED = 3 ; 
-	private String orderState;
-	private int deliveryCode;
-	private Date dateAndTime;
-	private int clientId;
+	private OrderState orderState;
+	private String deliveryCode;
+	private Date date;
+	private String clientId; 
 	private String restaurantNit;
-	private Product[] products;
-	private int[] quantities;
+	private ArrayList<Product> products;
+	private ArrayList<Integer> quantities;
 	
-	public Delivery(int clientId, String restaurantNit, Product[] products, int[] quantities) {
+	public Delivery(String clientId, String restaurantNit, ArrayList<Product> products, ArrayList<Integer> quantities) {
 		this.clientId = clientId;
 		this.restaurantNit = restaurantNit;
 		this.products = products;
 		this.quantities = quantities;
+		date = new Date(); 
+		deliveryCode = String.valueOf("D-" + date.getTime());
 	}
 
 	public String getOrderState() {
-		return orderState;
+		return orderState.toString() ;
 	}
 
-	public void setOrderState(int orderStateNumber) {
-		switch (orderStateNumber) {
-		case REQUESTED:
-			orderState = "Requested";
+	public void setOrderState(int orderStateNum) {
+		switch (orderStateNum) {
+		case 0:
+			orderState = OrderState.valueOf( "REQUESTED" );
 			break;
 			
-		case IN_PROCESS:
-			orderState = "In process";
+		case 1:
+			orderState = OrderState.valueOf( "IN_PROCESS" );
 			break;
 
-		case SENT:
-			orderState = "Sent";
+		case 2:
+			orderState = OrderState.valueOf( "SENT" );
 			break;
 			
-		case DELIVERED:
-			orderState = "Delivered";
+		case 3:
+			orderState = OrderState.valueOf( "DELIVERED" );
 			break;
 		}
 	}
 
-	public void setProducts(Product[] products) {
+	public void setProducts(ArrayList<Product> products) {
 		this.products = products;
 	}
 
-	public void setQuantities(int[] quantities) {
-		this.quantities = quantities;
-	}
-
-	public int getDeliveryCode() {
+	public String getDeliveryCode() {
 		return deliveryCode;
 	}
 
-	public Date getDateAndTime() {
-		return dateAndTime;
+	public String getDateAndTime() {
+		return date.toString();
 	}
 
-	public int getClientId() {
+	public String getClientId() {
 		return clientId;
 	}
 
@@ -71,14 +64,17 @@ public class Delivery {
 		return restaurantNit;
 	}
 
-	public Product[] getProducts() {
+	public ArrayList<Product> getProducts() {
 		return products;
 	}
 
-	public int[] getQuantities() {
-		return quantities;
+	@Override
+	public String toString() {
+		return "Delivery [orderState=" + orderState + ", deliveryCode=" + deliveryCode + ", dateAndTime=" + date
+				+ ", clientId=" + clientId + ", restaurantNit=" + restaurantNit + ", products=" + products
+				+ ", quantities=" + quantities + "]";
 	}
-	
+
 	
 	
 }

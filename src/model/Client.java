@@ -1,50 +1,60 @@
 package model;
 
 public class Client {
-	private String type;
+	private DocumentType documentType;
 	private String idNumber;
-	private String fullName;
+	private String name;
+	private String lastName;
 	private String phoneNumber;
-	private String adress;
+	private String address;
 	
-	public Client(String type, String idNumber, String fullName, String phoneNumber, String adress) {
-		this.type = type;
+	public Client(DocumentType documentType, String idNumber, String name, String lastName,  String phoneNumber, String address) {
+		this.documentType = documentType;
 		this.idNumber = idNumber;
-		this.fullName = fullName;
+		this.name = name;
+		this.lastName = lastName;
 		this.phoneNumber = phoneNumber;
-		this.adress = adress;
+		this.address = address;
 	}
 	
-	public void setType(String type) {
-		this.type = type;
+	public void setType(DocumentType documentType) {
+		this.documentType = documentType;
 	}
 
 	public void setIdNumber(String idNumber) {
 		this.idNumber = idNumber;
 	}
 
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setLastname(String lastName) {
+		this.lastName = lastName;
 	}
 
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
 
-	public void setAdress(String adress) {
-		this.adress = adress;
+	public void setAdress(String address) {
+		this.address = address;
 	}
 
-	public String getType() {
-		return type;
+	public DocumentType getType() {
+		return documentType;
 	}
 	
 	public String getIdNumber() {
 		return idNumber;
 	}
 	
-	public String getFullName() {
-		return fullName;
+	public String getName() {
+		return name;
+	}
+	
+	public String getLastname() {
+		return lastName;
 	}
 	
 	public String getPhoneNumber() {
@@ -52,7 +62,13 @@ public class Client {
 	}
 	
 	public String getAdress() {
-		return adress;
+		return address;
+	}
+
+	@Override
+	public String toString() {
+		return "Client [documentType=" + documentType + ", idNumber=" + idNumber + ", name=" + name + ", lastName="
+				+ lastName + ", phoneNumber=" + phoneNumber + ", address=" + address + "]";
 	}
 	
 	

@@ -1,14 +1,16 @@
 package model;
+import java.util.Date;
 
 public class Product {
-	private int code;
+	private String code;
 	private String name;
 	private String description;
 	private double price;
 	private String restaurantNit;
 	
-	public Product(int code, String name, String description, double price, String restaurantNit) {
-		this.code = code;
+	public Product( String name, String description, double price, String restaurantNit) {
+		Date date = new Date();
+		code = String.valueOf("P-" + date.getTime());
 		this.name = name;
 		this.description = description;
 		this.price = price;
@@ -27,7 +29,7 @@ public class Product {
 		this.price = price;
 	}
 
-	public int getCode() {
+	public String getCode() {
 		return code;
 	}
 
@@ -45,6 +47,12 @@ public class Product {
 
 	public String getRestaurantNit() {
 		return restaurantNit;
+	}
+
+	@Override
+	public String toString() {
+		return "Product [code=" + code + ", name=" + name + ", description=" + description + ", price=" + price
+				+ ", restaurantNit=" + restaurantNit + "]";
 	}
 	
 	
