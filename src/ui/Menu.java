@@ -6,16 +6,19 @@ import model.Manager;
 import model.Product;
 import model.Restaurant;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import exceptions.DiferentRestaurantException;
 import exceptions.EmptyClientListException;
 import exceptions.EmptyProductListException;
 import exceptions.EmptyRestaurantListException;
 import exceptions.InvalidClientException;
 import exceptions.InvalidNitException;
+import exceptions.InvalidOptionException;
 
 public class Menu {
-	private final static int EXIT = 5;
+	private final static int EXIT = 7;
 	private static String ASTERISKS = "*****************";	
 	private Scanner in; 
 	private Manager manager;
@@ -34,7 +37,15 @@ public class Menu {
 	public void startProgram() {
 		boolean exit = false;
 		String option = "";
-
+		try {
+			manager.loadManager();
+		} catch (ClassNotFoundException classNotFoundException) {
+			System.err.println("Problem loading the saved data.");
+			System.err.println("If its the first time running the program, IGNORE this message.");
+		}catch (IOException ioException) {
+			System.err.println("Problem loading the saved data.");
+		}
+		
 		do {
 			try {
 				showMenu();
@@ -46,7 +57,12 @@ public class Menu {
 				System.err.println("the entered option - "+ option +" - is not a valid selection.\n Please only enter the number next to the option." );
 				pressAnyKeyToContinue();
 			}
-
+			try {
+				manager.saveManager();
+			} catch (IOException ioException) {
+				System.err.println("Problem saving the data.");
+			}
+			
 
 		} while (!exit);
 	}
@@ -59,12 +75,13 @@ public class Menu {
 		System.out.println("2. Register Product.");
 		System.out.println("3. Register Client.");
 		System.out.println("4. Register delivery.");
-		System.out.println("5. Exit.");
+		System.out.println("5. Edit Info:(Restaurants, Clients, products).");
+		System.out.println("6. change delivery status.");
+		System.out.println("7. Exit.");
 	}
 
 	private boolean runOptions(int option) throws NumberFormatException{
 		boolean exit = false;
-		//boolean optionExit = false;
 		
 		switch (option) {
 
@@ -142,14 +159,21 @@ public class Menu {
 			
 			
 			break;
+		case 5:
+			boolean localExit = false;
+			do {
+				
+				localExit = menuOptionFive();
+				
+			} while (localExit);
+			break;
+			
+		case 6:
+	
+			break;
 			
 		case 342:
-			System.out.println(ASTERISKS + ASTERISKS);
-			System.out.println(manager.getRestaurants().toString());
-			System.out.println(manager.getProducts().toString());
-			System.out.println(manager.getClients().toString());
-			System.out.println(ASTERISKS + ASTERISKS);
-			pressAnyKeyToContinue();
+			
 			break;
 		case EXIT:
 			System.out.println(ASTERISKS);
@@ -218,7 +242,7 @@ public class Menu {
 		
 		Product product = new Product(name, description, price, resNit);
 		
-		manager.addProduct(product,resNit);
+		manager.addProduct(product);
 		
 		System.out.println("Product generated code: " + product.getCode());
 
@@ -279,9 +303,8 @@ public class Menu {
 		}else if (manager.getRestaurants().size() == 0) {
 			throw new EmptyRestaurantListException();
 			
-		}else if(manager.getProducts().size() == 0){		
+		}else if (manager.getProducts().size() == 0) {
 			throw new EmptyProductListException();
-			
 		}
 		
 		System.out.println(ASTERISKS);
@@ -299,30 +322,16 @@ public class Menu {
 		if (!manager.registeredId(clientId)) {
 			throw new InvalidClientException(clientId);
 		}
-		
-		System.out.println("-Enter the restaurant nit from where is made the order:");
-		System.out.println(ASTERISKS);
-		System.out.println("-current nit list: ");
-		System.out.println("-only showing restaurants with at least one product.");
-		for (Restaurant restaurant: manager.getRestaurants()) {
-			if (restaurant.getProducts().size() != 0) {
-				System.out.println(restaurant.getName() + ": " + restaurant.getNit());
-			}
-			
-		}
-		System.out.println(ASTERISKS);
-		
-		System.out.println("Enter nit:");
-		String resNit = in.nextLine();
-		if (!manager.usedNit(resNit)) {
-			throw new InvalidNitException(resNit);
-		}
-		
-		boolean selectAnOther = false;
+				
 		ArrayList<Product> products = new ArrayList<>();
 		ArrayList<Integer> quantities =  new ArrayList<>();
 		
+		boolean selectAnOther = false;
+		String resNit = "";
 		do {
+			if (products.size() != 0 ) {
+				resNit = products.get(0).getRestaurantNit();
+			}
 			Product product = selectPorudct(resNit);
 			System.out.println("- Enter the quantitie of this product to add to the delivery:");
 			int quantity = Integer.parseInt(in.nextLine());
@@ -335,7 +344,7 @@ public class Menu {
 			
 			System.out.println("- Add nore products:");
 			System.out.println("1. Yes");
-			System.out.println("1. No");
+			System.out.println("2. No");
 			int option = Integer.parseInt(in.nextLine());
 			switch (option) {
 			case 1:
@@ -354,35 +363,293 @@ public class Menu {
 		
 		
 		
-		Delivery delivery = new Delivery(clientId, resNit, products, quantities);
+		Delivery delivery = new Delivery(clientId, products.get(0).getRestaurantNit() , products, quantities);
 		manager.getDeliveries().add(delivery);
 
 		
 	}
 	
-	private Product selectPorudct(String resNit) throws NumberFormatException{
-		Restaurant restaurant = manager.getRestaurant(resNit);
+	private Product selectPorudct(String resNit) {
+		boolean error = false;
+		int option = 0;
+		Product finalProduct = new Product(); 
+		do {
+			
+			System.out.println(ASTERISKS);
+			System.out.println("you can only order from one restaurant.");
+			System.out.println("if a product is unavailable, its because its from a diferent restaurant.");
+			int productIndex = 0;
+			for (Product product : manager.getProducts()) {
+				productIndex++;
+				if (!resNit.equals("") && !product.getRestaurantNit().equals(resNit)) {
+					System.out.print("unavailable- ");
+				}
+				System.out.println(productIndex + ". " + product.getName() + ": " + product.getPrice() + ". Restaurant: " + manager.getRestaurant(product.getRestaurantNit()).getName() );
+			}
+			
+			try {
+				option = Integer.parseInt(in.nextLine());
+				if (option < 1 || option > productIndex) {
+					throw new InvalidOptionException(1, productIndex);
+				}
+				
+				if (resNit.equals("") ) {
+					finalProduct = manager.getProducts().get(option-1);
+				}else {
+					if (manager.getProducts().get(option-1).getRestaurantNit().equals(resNit)) {
+						finalProduct = manager.getProducts().get(option-1);
+					}else {
+						throw new DiferentRestaurantException();
+					}
+				}
+				error = false;
+			} catch (InvalidOptionException invalidOptionException) {
+				System.err.println(invalidOptionException.getMessage());
+				pressAnyKeyToContinue();
+				error = true;
+			}catch (NumberFormatException numberFormatException) {
+				System.err.println("the entered option was invalid. please only enter the number next to the option");
+				pressAnyKeyToContinue();
+				error = true;
+			}catch (DiferentRestaurantException diferentRestaurantException) {
+				System.err.println(diferentRestaurantException.getMessage());
+				pressAnyKeyToContinue();
+				error = true;
+			}
+			
+		} while (error);
+		
+		
+		
+		return finalProduct;
+						
+	}
+	
+	private boolean menuOptionFive() {
+		boolean exit = false;
+				
 		System.out.println(ASTERISKS);
-		System.out.println("-to add a product select the number next to the desired product.");
-		for (int i = 0; i < restaurant.getProducts().size(); i++){
-				System.out.println("-" + (i+1) + ". " + restaurant.getProducts().get(i).getName() + ": " + restaurant.getProducts().get(i).getPrice() );
+		System.out.println("Edit info menu:");
+		System.out.println("1. Edit restaurant info.");
+		System.out.println("2. Edit Products info." );
+		System.out.println("3. Edit Clients info.");
+		System.out.println("4. Edit delivery info.");
+		System.out.println("5. principal menu");
+		
+		int option = Integer.parseInt( in.nextLine());
+		switch (option) {
+		
+		case 1:
+			editRestaurantInfo();
+			break;
+		case 2:
+			editProductInfo();
+			break;			
+		case 3:
+			editClientInfo();
+			break;
+		case 4:
+			editDeliveryInfo();
+			break;
+			
+		case 5:
+			exit = true;
+			break;
+			
+		default:
+			break;
 		}
 		
-		int option = Integer.parseInt(in.nextLine());
-		if (option < 1 || option > manager.getProducts().size()) {
-			throw  new NumberFormatException();
+		return exit;
+	}
+	
+	private void editRestaurantInfo() {
+		boolean error = false;
+		int resIndex = 0;
+		
+		do {
+			
+			System.out.println(ASTERISKS);
+			System.out.println("Select a restaurant to edit:");
+			for (int i = 0; i < manager.getRestaurants().size() ; i++) {
+				System.out.println(  i + ".  "+ manager.getRestaurants().get(i).getName() + ". ");
+				
+			}
+			
+			try {
+				resIndex = Integer.parseInt( in.nextLine());
+				if (resIndex < 1 || resIndex > manager.getRestaurants().size() ) {
+					throw new InvalidOptionException( 1, manager.getRestaurants().size());
+				}
+			} catch (InvalidOptionException invalidOptionException) {
+				System.err.println(invalidOptionException.getMessage());
+				error = true;
+			}catch (NumberFormatException numberFormatException) {
+				System.err.println("the entered option was invalid. please only enter the number next to the option");
+				error = true;
+			}
+			
+		} while (error);
+		
+		
+		error = false;
+		int option = 0;
+		do {
+			
+			System.out.println(ASTERISKS);
+			System.out.println("Select what to edit:");
+			System.out.println("1. Restaurant name.");
+			System.out.println("2. Restaurant Nit.");
+			System.out.println("3. Restaurant admin name.");
+			
+			try {
+				option = Integer.parseInt( in.nextLine());
+				if (option < 1 || option > 3 ) {
+					throw new InvalidOptionException( 1, 3);
+				}
+			} catch (InvalidOptionException invalidOptionException) {
+				System.err.println(invalidOptionException.getMessage());
+				pressAnyKeyToContinue();
+				error = true;
+			} catch (NumberFormatException numberFormatException) {
+				System.err.println("the entered option was invalid. please only enter the number next to the option");
+				pressAnyKeyToContinue();
+				error = true;
+			}
+			
+			
+		} while (error);
+		
+		
+		
+		switch (option) {
+		case 1:
+			System.out.println(ASTERISKS);
+			System.out.println("Enter the new restaurants name: ");
+			manager.getRestaurants().get(resIndex).setName(in.nextLine());
+			break;
+		
+		case 2:
+			System.out.println(ASTERISKS);
+			System.out.println("Enter the new restaurants Nit: ");
+			manager.getRestaurants().get(resIndex).setNit(in.nextLine());
+			break;
+		
+		case 3:
+			System.out.println(ASTERISKS);
+			System.out.println("Enter the new restaurants admin name: ");
+			manager.getRestaurants().get(resIndex).setAdminName(in.nextLine());
+			break;
 		}
-		
-		Product product  = manager.getProducts().get(option-1);
-		
-		
-		return product;
-		
 		
 		
 	}
 	
-	
-	
+	private void editProductInfo() {
+		boolean error = false;
+		int productIndex = 0;
+		
+		do {
+			int cont = 0;
+			System.out.println(ASTERISKS);
+			System.out.println("Select a product to edit:");
+			for (Product product: manager.getProducts()) {
+				cont++;
+				System.out.println(cont + ". " + product.getName() + ".");
+			}
+			
+			try {
+				productIndex = Integer.parseInt( in.nextLine());
+				if (productIndex < 1 || productIndex >  cont ) {
+					throw new InvalidOptionException( 1, cont);
+				}
+			} catch (InvalidOptionException invalidOptionException) {
+				System.err.println(invalidOptionException.getMessage());
+				error = true;
+				pressAnyKeyToContinue();
+			}catch (NumberFormatException numberFormatException) {
+				System.err.println("the entered option was invalid. please only enter the number next to the option");
+				error = true;
+				pressAnyKeyToContinue();
+			}
+			
+			
+			
+		} while (error);
+		
+		
+		error = false;
+		int option = 0;
+		do {
+			
+			System.out.println(ASTERISKS);
+			System.out.println("Select what to edit:");
+			System.out.println("1. product name.");
+			System.out.println("2. product description.");
+			System.out.println("3. product price.");
+			
+			try {
+				option = Integer.parseInt( in.nextLine());
+				if (option < 1 || option > 3 ) {
+					throw new InvalidOptionException( 1, 3);
+				}
+			} catch (InvalidOptionException invalidOptionException) {
+				System.err.println(invalidOptionException.getMessage());
+				pressAnyKeyToContinue();
+				error = true;
+			} catch (NumberFormatException numberFormatException) {
+				System.err.println("the entered option was invalid. please only enter the number next to the option");
+				pressAnyKeyToContinue();
+				error = true;
+			}
+			
+			
+		} while (error);
+		
+		
+		
+		switch (option) {
+		case 1:
+			System.out.println(ASTERISKS);
+			System.out.println("Enter the new product name: ");
+			manager.getProducts().get(productIndex).setName(in.nextLine());
+			break;
+		
+		case 2:
+			System.out.println(ASTERISKS);
+			System.out.println("Enter the new product description: ");
+			manager.getProducts().get(productIndex).setDescription(in.nextLine());
+			break;
+		
+		case 3:
+			error = false;
+			do {
+				try {
+					System.out.println(ASTERISKS);
+					System.out.println("Enter the new product price: ");
+					manager.getProducts().get(productIndex).setPrice(Double.parseDouble(in.nextLine()));
+				} catch (NumberFormatException numberFormatException) {
+					System.err.println("the entered price is invalid. enter the price in numbers and if decimal, separate the decimal part with a '.'");
+					pressAnyKeyToContinue();
+					error = true;
+				}
+				
+			} while (error);
+			
+			break;
+		}
+		
+	}
 
+	private void editClientInfo() {
+		
+		
+	}
+	
+	private void editDeliveryInfo() {
+		
+		
+	}
+
+	
 }

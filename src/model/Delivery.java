@@ -1,8 +1,12 @@
 package model;
 
 import java.util.Date;
+import java.io.Serializable;
 import java.util.ArrayList;
-public class Delivery {
+public class Delivery implements Serializable{
+	
+	private static final long serialVersionUID = 1;
+	
 	private OrderState orderState;
 	private String deliveryCode;
 	private Date date;

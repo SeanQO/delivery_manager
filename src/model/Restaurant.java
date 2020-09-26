@@ -1,17 +1,23 @@
 package model;
 
-import java.util.ArrayList;
-public class Restaurant {
+import java.io.Serializable;
+
+public class Restaurant implements Serializable{
+	
+	private static final long serialVersionUID = 1;
+	
 	private String name;
 	private String nit;
 	private String adminName;
-	private ArrayList<Product> products;
-
+	
+	public Restaurant() {
+		
+	}
+	
 	public Restaurant(String name, String nit, String adminName) {
 		this.name = name;
 		this.nit = nit;
 		this.adminName = adminName;
-		products = new ArrayList<>();
 	}
 
 	public void setName(String name) {
@@ -20,6 +26,7 @@ public class Restaurant {
 
 	public void setNit(String nit) {
 		this.nit = nit;
+		
 	}
 
 	public void setAdminName(String adminName) {
@@ -36,14 +43,6 @@ public class Restaurant {
 
 	public String getAdminName() {
 		return adminName;
-	}
-	
-	public ArrayList<Product> getProducts(){
-		return products;
-	}
-	
-	public void AddProduct(Product product) {
-		products.add(product);
 	}
 
 	@Override

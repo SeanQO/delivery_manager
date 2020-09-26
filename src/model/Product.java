@@ -1,12 +1,20 @@
 package model;
+import java.io.Serializable;
 import java.util.Date;
 
-public class Product {
+public class Product implements Serializable{
+	
+	private static final long serialVersionUID = 1;
+	
 	private String code;
 	private String name;
 	private String description;
 	private double price;
 	private String restaurantNit;
+	
+	public Product() {
+		
+	}
 	
 	public Product( String name, String description, double price, String restaurantNit) {
 		Date date = new Date();
@@ -27,6 +35,10 @@ public class Product {
 
 	public void setPrice(double price) {
 		this.price = price;
+	}
+	
+	public void setRestaurantNit(String nit) {
+		this.restaurantNit = nit;
 	}
 
 	public String getCode() {
