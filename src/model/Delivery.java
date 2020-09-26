@@ -22,10 +22,11 @@ public class Delivery implements Serializable{
 		this.quantities = quantities;
 		date = new Date(); 
 		deliveryCode = String.valueOf("D-" + date.getTime());
+		orderState = OrderState.valueOf("REQUESTED");
 	}
 
 	public String getOrderState() {
-		return orderState.toString() ;
+		return String.valueOf(orderState);
 	}
 
 	public void setOrderState(int orderStateNum) {

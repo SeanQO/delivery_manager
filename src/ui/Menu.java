@@ -6,6 +6,7 @@ import model.Manager;
 import model.Product;
 import model.Restaurant;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -18,7 +19,7 @@ import exceptions.InvalidNitException;
 import exceptions.InvalidOptionException;
 
 public class Menu {
-	private final static int EXIT = 7;
+	private final static int EXIT = 9;
 	private static String ASTERISKS = "*****************";	
 	private Scanner in; 
 	private Manager manager;
@@ -76,8 +77,10 @@ public class Menu {
 		System.out.println("3. Register Client.");
 		System.out.println("4. Register delivery.");
 		System.out.println("5. Edit Info:(Restaurants, Clients, products).");
-		System.out.println("6. change delivery status.");
-		System.out.println("7. Exit.");
+		System.out.println("6. Change delivery status.");
+		System.out.println("7. Export delivery report.");
+		System.out.println("8. import data");
+		System.out.println("9. Exit.");
 	}
 
 	private boolean runOptions(int option) throws NumberFormatException{
@@ -169,12 +172,30 @@ public class Menu {
 			break;
 			
 		case 6:
-	
+			runOptionSix();
 			break;
 			
-		case 342:
+		case 7:
+			System.out.println(ASTERISKS);
+			System.out.println("enter file name to export to. ex: data/deliveryReport.csv");
+			String path = in.nextLine();
+			System.out.println("enter separator. ex  - ");
+			String separator = in.nextLine();
+			try {
+				manager.exportDeliveryReport(path, separator);
+				System.out.println("Files succesfully saved.");
+			} catch (FileNotFoundException fileNotFoundException) {
+				System.err.println("couldnt save the report, please try again.");
+			}
 			
 			break;
+			
+		case 8:
+			
+			runOptionEigth();
+			
+			break;
+			
 		case EXIT:
 			System.out.println(ASTERISKS);
 			System.out.println("*Program finished*");
@@ -427,16 +448,34 @@ public class Menu {
 	
 	private boolean menuOptionFive() {
 		boolean exit = false;
-				
-		System.out.println(ASTERISKS);
-		System.out.println("Edit info menu:");
-		System.out.println("1. Edit restaurant info.");
-		System.out.println("2. Edit Products info." );
-		System.out.println("3. Edit Clients info.");
-		System.out.println("4. Edit delivery info.");
-		System.out.println("5. principal menu");
+		boolean error = false;
+		int option = 0;
+		do {
+			System.out.println(ASTERISKS);
+			System.out.println("Edit info menu:");
+			System.out.println("1. Edit restaurant info.");
+			System.out.println("2. Edit Products info." );
+			System.out.println("3. Edit Clients info.");
+			System.out.println("4. principal menu");
+			try {
+				option = Integer.parseInt( in.nextLine());
+				if (option < 1 || option >  4) {
+					throw new InvalidOptionException( 1, 4);
+				}
+			} catch (InvalidOptionException invalidOptionException) {
+				System.err.println(invalidOptionException.getMessage());
+				error = true;
+				pressAnyKeyToContinue();
+			}catch (NumberFormatException numberFormatException) {
+				System.err.println("the entered option was invalid. please only enter the number next to the option");
+				error = true;
+				pressAnyKeyToContinue();
+			}
+			
+		} while (error);
 		
-		int option = Integer.parseInt( in.nextLine());
+		
+		
 		switch (option) {
 		
 		case 1:
@@ -447,9 +486,6 @@ public class Menu {
 			break;			
 		case 3:
 			editClientInfo();
-			break;
-		case 4:
-			editDeliveryInfo();
 			break;
 			
 		case 5:
@@ -642,14 +678,170 @@ public class Menu {
 	}
 
 	private void editClientInfo() {
+		boolean error = false;
+		int clientIndex = 0;
+		
+		do {
+			int cont = 0;
+			System.out.println(ASTERISKS);
+			System.out.println("Select a client to edit:");
+			for (Client client: manager.getClients()) {
+				cont++;
+				System.out.println(cont + ". " + client.getName() + "." + "id: "+ client.getIdNumber());
+			}
+			
+			try {
+				clientIndex = Integer.parseInt( in.nextLine());
+				if (clientIndex < 1 || clientIndex >  cont ) {
+					throw new InvalidOptionException( 1, cont);
+				}
+			} catch (InvalidOptionException invalidOptionException) {
+				System.err.println(invalidOptionException.getMessage());
+				error = true;
+				pressAnyKeyToContinue();
+			}catch (NumberFormatException numberFormatException) {
+				System.err.println("the entered option was invalid. please only enter the number next to the option");
+				error = true;
+				pressAnyKeyToContinue();
+			}
+			
+			
+			
+		} while (error);	
+		
+		error = false;
+		int option = 0;
+		do {
+			
+			System.out.println(ASTERISKS);
+			System.out.println("Select what to edit:");
+			System.out.println("1. Client id Number.");
+			System.out.println("2. Client name.");
+			System.out.println("3. Client lastname.");
+			System.out.println("4. Client phone number.");
+			System.out.println("5. Client address.");
+			
+			
+			try {
+				option = Integer.parseInt( in.nextLine());
+				if (option < 1 || option > 6 ) {
+					throw new InvalidOptionException( 1, 6);
+				}
+			} catch (InvalidOptionException invalidOptionException) {
+				System.err.println(invalidOptionException.getMessage());
+				pressAnyKeyToContinue();
+				error = true;
+			} catch (NumberFormatException numberFormatException) {
+				System.err.println("the entered option was invalid. please only enter the number next to the option");
+				pressAnyKeyToContinue();
+				error = true;
+			}
+			
+			
+		} while (error);
+		
+		switch (option) {
+		case 1:
+			System.out.println(ASTERISKS);
+			System.out.println("Enter the new Client id number: ");
+			manager.getClients().get(clientIndex).setIdNumber(in.nextLine());
+			break;
+		
+		case 2:
+			System.out.println(ASTERISKS);
+			System.out.println("Enter the new Client name: ");
+			manager.getClients().get(clientIndex).setName(in.nextLine());
+			break;
+		
+		case 3:
+			System.out.println(ASTERISKS);
+			System.out.println("Enter the new Client lastname: ");
+			manager.getClients().get(clientIndex).setLastname(in.nextLine());
+			break;
+			
+		case 4:
+			System.out.println(ASTERISKS);
+			System.out.println("Enter the new Client phone number: ");
+			manager.getClients().get(clientIndex).setPhoneNumber(in.nextLine());
+			break;
+			
+		case 5:
+			System.out.println(ASTERISKS);
+			System.out.println("Enter the new Client address: ");
+			manager.getClients().get(clientIndex).setAdress(in.nextLine());
+			break;
+
+		}
 		
 		
 	}
 	
-	private void editDeliveryInfo() {
-		
+	private void runOptionSix(){
 		
 	}
+	
+	private void runOptionEigth() {
+		boolean error = false;
+		int option = 0;
+		do {
+			
+			System.out.println(ASTERISKS);
+			System.out.println("1. import Clients data");
+			System.out.println("2. import Restaurants data");
+			System.out.println("3. import products data");
+			
+			try {
+				option = Integer.parseInt( in.nextLine());
+				if (option < 1 || option > 6 ) {
+					throw new InvalidOptionException( 1, 6);
+				}
+			} catch (InvalidOptionException invalidOptionException) {
+				System.err.println(invalidOptionException.getMessage());
+				pressAnyKeyToContinue();
+				error = true;
+			} catch (NumberFormatException numberFormatException) {
+				System.err.println("the entered option was invalid. please only enter the number next to the option");
+				pressAnyKeyToContinue();
+				error = true;
+			}
+			
+			
+		} while (error);
+		
+		switch (option) {
+		case 1:
+			System.out.println("enter path. ex: data/CLIENT_DATA.csv");
+			String fileName = in.nextLine();
+			try {
+				manager.importClientsData(fileName);
+			} catch (IOException ioException) {
+				System.err.println("couldnt import the report, please try again.");
+			}
+			break;
+		
+		case 2:
+			System.out.println("enter path. ex: data/RESTAURANT_DATA.csv");
+			 fileName = in.nextLine();
+			try {
+				manager.importRestaurantsData(fileName);
+			} catch (IOException ioException) {
+				System.err.println("couldnt import the report, please try again.");
+			}
+			break;
+		
+		case 3:
+			System.out.println("enter path. ex: data/PRODUCT_DATA.csv");
+			 fileName = in.nextLine();
+			try {
+				manager.importProductsata(fileName);
+			} catch (IOException ioException) {
+				System.err.println("couldnt import the report, please try again.");
+			}
+			break;
 
+		}
+		
+		 
+	}
 	
 }

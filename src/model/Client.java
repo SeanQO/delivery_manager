@@ -13,6 +13,10 @@ public class Client implements Serializable{
 	private String phoneNumber;
 	private String address;
 	
+	public Client() {
+		
+	}
+	
 	public Client(DocumentType documentType, String idNumber, String name, String lastName,  String phoneNumber, String address) {
 		this.documentType = documentType;
 		this.idNumber = idNumber;

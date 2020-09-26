@@ -6,4 +6,6 @@ public enum OrderState {
 	SENT, 
 	DELIVERED;
 
+	
+	
 }
