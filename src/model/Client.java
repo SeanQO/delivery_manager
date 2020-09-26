@@ -2,7 +2,7 @@ package model;
 
 import java.io.Serializable;
 
-public class Client implements Serializable{
+public class Client implements Serializable, Comparable<Client> {
 	
 	private static final long serialVersionUID = 1;
 	
@@ -78,6 +78,19 @@ public class Client implements Serializable{
 	public String toString() {
 		return "Client [documentType=" + documentType + ", idNumber=" + idNumber + ", name=" + name + ", lastName="
 				+ lastName + ", phoneNumber=" + phoneNumber + ", address=" + address + "]";
+	}
+	
+
+	@Override
+	public int compareTo(Client otherClient) {
+		int comp;
+		
+		comp = lastName.compareTo(otherClient.lastName);
+		if (comp == 0) {
+			comp = name.compareTo(otherClient.name);
+		}
+		
+		return comp;
 	}
 	
 	

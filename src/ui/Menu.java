@@ -80,7 +80,7 @@ public class Menu {
 		System.out.println("6. Change delivery status.");
 		System.out.println("7. Export delivery report.");
 		System.out.println("8. import data");
-		System.out.println("9. Exit.");
+		System.out.println("10. Exit.");
 	}
 
 	private boolean runOptions(int option) throws NumberFormatException{
@@ -195,7 +195,6 @@ public class Menu {
 			runOptionEigth();
 			
 			break;
-			
 		case EXIT:
 			System.out.println(ASTERISKS);
 			System.out.println("*Program finished*");
@@ -777,6 +776,42 @@ public class Menu {
 	}
 	
 	private void runOptionSix(){
+		boolean error = false;
+		int deliveryIndex = 0;
+		
+		do {
+			int cont = 0;
+			System.out.println(ASTERISKS);
+			System.out.println("Select a delivery to change status:");
+			for (Delivery delivery: manager.getDeliveries()) {
+				System.out.println(cont + ". "  + String.valueOf( delivery.getDeliveryCode() )+ "." + delivery.getOrderState());
+			}
+			
+			try {
+				deliveryIndex = Integer.parseInt( in.nextLine());
+				if (deliveryIndex < 1 || deliveryIndex >  cont ) {
+					throw new InvalidOptionException( 1, cont);
+				}
+			} catch (InvalidOptionException invalidOptionException) {
+				System.err.println(invalidOptionException.getMessage());
+				error = true;
+				pressAnyKeyToContinue();
+			}catch (NumberFormatException numberFormatException) {
+				System.err.println("the entered option was invalid. please only enter the number next to the option");
+				error = true;
+				pressAnyKeyToContinue();
+			}
+			
+			
+			
+		} while (error);
+		
+		int orderStateNum = manager.getDeliveries().get(deliveryIndex).getOrderState().ordinal() + 1;
+		if (orderStateNum <= 3) {
+			manager.getDeliveries().get(deliveryIndex).setOrderState(orderStateNum);
+		}
+		
+		System.out.println("the new status is: " + String.valueOf( manager.getDeliveries().get(deliveryIndex).getOrderState() ));
 		
 	}
 	
@@ -843,5 +878,6 @@ public class Menu {
 		
 		 
 	}
+	
 	
 }

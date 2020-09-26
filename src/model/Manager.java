@@ -10,6 +10,7 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Manager implements Serializable{
 	
@@ -196,6 +197,7 @@ public class Manager implements Serializable{
 	}
 	
 	public ArrayList<Client> getClients(){
+		Collections.sort(clients);
 		return clients;
 	}
 	

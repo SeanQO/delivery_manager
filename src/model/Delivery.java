@@ -25,8 +25,8 @@ public class Delivery implements Serializable{
 		orderState = OrderState.valueOf("REQUESTED");
 	}
 
-	public String getOrderState() {
-		return String.valueOf(orderState);
+	public OrderState getOrderState() {
+		return orderState;
 	}
 
 	public void setOrderState(int orderStateNum) {
