@@ -19,7 +19,7 @@ import exceptions.InvalidNitException;
 import exceptions.InvalidOptionException;
 
 public class Menu {
-	private final static int EXIT = 9;
+	private final static int EXIT = 10;
 	private static String ASTERISKS = "*****************";	
 	private Scanner in; 
 	private Manager manager;
@@ -41,10 +41,10 @@ public class Menu {
 		try {
 			manager.loadManager();
 		} catch (ClassNotFoundException classNotFoundException) {
-			System.err.println("Problem loading the saved data.");
-			System.err.println("If its the first time running the program, IGNORE this message.");
+			System.err.println("Problem loading the saved data.\nIf its the first time running the program, IGNORE this message.");
+
 		}catch (IOException ioException) {
-			System.err.println("Problem loading the saved data.");
+			System.err.println("Problem loading the saved data.\nIf its the first time running the program, IGNORE this message.");
 		}
 		
 		do {
@@ -80,6 +80,7 @@ public class Menu {
 		System.out.println("6. Change delivery status.");
 		System.out.println("7. Export delivery report.");
 		System.out.println("8. import data");
+		System.out.println("9. Search client");
 		System.out.println("10. Exit.");
 	}
 
@@ -195,13 +196,17 @@ public class Menu {
 			runOptionEigth();
 			
 			break;
+		
+		case 9:
+			//runOptionNine();
+			break;
 		case EXIT:
 			System.out.println(ASTERISKS);
 			System.out.println("*Program finished*");
 			System.out.println(ASTERISKS);
 			exit = true;
 			break;
-
+		
 		default:
 			throw new  NumberFormatException();
 
@@ -311,8 +316,9 @@ public class Menu {
 		String address = in.nextLine();
 		
 		Client client  = new Client(documentType, idNumber, name, lastName, phoneNumber, address);
+		System.out.println("Adding client ...");
 		manager.addClients(client);
-
+		System.out.println("Client succesfully added");
 	}
 	
 	private void runOptionFour() throws EmptyProductListException, EmptyRestaurantListException, InvalidClientException, InvalidNitException, EmptyClientListException {
@@ -686,7 +692,7 @@ public class Menu {
 			System.out.println("Select a client to edit:");
 			for (Client client: manager.getClients()) {
 				cont++;
-				System.out.println(cont + ". " + client.getName() + "." + "id: "+ client.getIdNumber());
+				System.out.println(cont + ". " + client.getName() + "." + client.getLastname() + "." + "id: "+ client.getIdNumber());
 			}
 			
 			try {
@@ -878,6 +884,7 @@ public class Menu {
 		
 		 
 	}
+	
 	
 	
 }

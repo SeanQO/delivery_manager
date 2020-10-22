@@ -1,5 +1,6 @@
 package model;
 import java.io.BufferedReader;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -109,6 +110,7 @@ public class Manager implements Serializable{
 		}
 		
 		saveManager();
+		Collections.sort(clients);
 		bReader.close();
 	
 	}
@@ -197,14 +199,40 @@ public class Manager implements Serializable{
 	}
 	
 	public ArrayList<Client> getClients(){
-		Collections.sort(clients);
 		return clients;
 	}
 	
 	public void addClients(Client client) {
-		clients.add(client);
+		if (clients.size() == 0 ) {
+			clients.add(client);
+		}else if(clients.size() == 1){
+			clients.add(clients.get(clients.size()-1));
+			if (client.compareTo(clients.get(0)) >= 0) {
+				clients.set(1, client);
+			}else {
+				clients.set(0, client);
+			}
+		}else {
+			//duplicate last element
+			clients.add(clients.get(clients.size()-1));
+			boolean exit = false;
+			for (int i = clients.size()-2; i > 0 && !exit; i--) {
+				if (client.compareTo(clients.get(i-1)) > 0 ) {
+					exit = true;
+					clients.set(i, client);
+				}else {
+					clients.set(i, clients.get(i-1));
+					if (i == 1) {
+						clients.set(0, client);
+					}
+				}
+				
+			}
+		}
+			
+		
 	}
-	
+
 	public boolean registeredId(String id) {
 		boolean registeredId = false;
 		
@@ -228,6 +256,7 @@ public class Manager implements Serializable{
 		return client;
 		
 	}
+	
 	
 	public ArrayList<Product> getProducts(){
 		return products;

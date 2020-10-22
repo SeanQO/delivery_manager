@@ -1,4 +1,4 @@
-package model;
+	package model;
 
 import java.io.Serializable;
 
@@ -84,10 +84,13 @@ public class Client implements Serializable, Comparable<Client> {
 	@Override
 	public int compareTo(Client otherClient) {
 		int comp;
-		
-		comp = lastName.compareTo(otherClient.lastName);
+		char lastNameOne = Character.toUpperCase( lastName.charAt(0) );
+		char lasNameTwo =  Character.toUpperCase( otherClient.getLastname().charAt(0) );
+		comp = lastNameOne - lasNameTwo;
 		if (comp == 0) {
-			comp = name.compareTo(otherClient.name);
+			char nameOne = Character.toUpperCase( name.charAt(0) );
+			char nameTwo = Character.toUpperCase( otherClient.getName().charAt(0) );
+			comp = nameOne - nameTwo;
 		}
 		
 		return comp;
