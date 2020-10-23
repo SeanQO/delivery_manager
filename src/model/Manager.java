@@ -247,6 +247,22 @@ public class Manager implements Serializable{
 			
 		
 	}
+	
+	public void sortClientsByPhoneNumber() {
+		int index = 0;
+	    for(int i = 0; i < clients.size() - 1 ; i++){
+
+	      index = i;
+	      for(int j = i + 1 ; j < clients.size(); j++){
+	        if (clients.get(j).compareToByPhoneNumber(clients.get(index)) < 0){
+	          index = j;
+	        }      
+	      }
+	      Client min = clients.get(index);
+	      clients.set(index, clients.get(i));
+	      clients.set(i, min);
+	    }
+	}
 
 	public boolean registeredId(String id) {
 		boolean registeredId = false;

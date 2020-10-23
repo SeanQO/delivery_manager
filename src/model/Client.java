@@ -96,5 +96,18 @@ public class Client implements Serializable, Comparable<Client> {
 		return comp;
 	}
 	
+	public int compareToByPhoneNumber(Client otherClient) {
+		long comp = Long.parseLong( phoneNumber ) - Long.parseLong( otherClient.getPhoneNumber() );
+		int comp2 = 0;
+		if (comp > 0) {
+			comp2 = 1;
+		}else if(comp == 0) {
+			comp2 = 0;
+		}else {
+			comp2 = -1;
+		}
+		return comp2;
+	}
+	
 	
 }

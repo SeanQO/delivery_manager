@@ -21,7 +21,7 @@ import exceptions.InvalidNitException;
 import exceptions.InvalidOptionException;
 
 public class Menu {
-	private final static int EXIT = 11;
+	private final static int EXIT = 12;
 	private static String ASTERISKS = "*****************";	
 	private Scanner in; 
 	private Manager manager;
@@ -84,7 +84,8 @@ public class Menu {
 		System.out.println("8. import data");
 		System.out.println("9. Search client");
 		System.out.println("10. Show restaurants");
-		System.out.println("11. Exit.");
+		System.out.println("11. Show clients (sorted by phone number)");
+		System.out.println("12. Exit.");
 	}
 
 	private boolean runOptions(int option) throws NumberFormatException{
@@ -205,6 +206,9 @@ public class Menu {
 			break;
 		case 10:
 			runOptionTen();
+		break;
+		case 11:
+			runOptionEleven();
 		break;
 		case EXIT:
 			System.out.println(ASTERISKS);
@@ -926,4 +930,14 @@ public class Menu {
 		pressAnyKeyToContinue();
 	}
 	
+	private void runOptionEleven() {
+		manager.sortClientsByPhoneNumber();
+		System.out.println(ASTERISKS);
+		System.out.println("Client sorted list by phone number:\n\n");
+		for (Client client : manager.getClients()) {
+			System.out.println("- " + client.getName() + " " + client.getLastname() + " id: " + client.getIdNumber());
+		}
+		Collections.sort(manager.getClients());
+		pressAnyKeyToContinue();
+	}
 }
