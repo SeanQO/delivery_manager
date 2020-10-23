@@ -275,5 +275,23 @@ public class Manager implements Serializable{
 		deliveries.add(delivery);
 	}
 	
+	public Client searchClient(String name) {
+		int left = 0;
+		int rigth = clients.size() - 1;
+		while (left <= rigth) {
+			int mid = (rigth + left) / 2;
+			if (name.compareToIgnoreCase(clients.get(mid).getName()) < 0) {
+				rigth = mid	-1;
+			}else if (name.compareToIgnoreCase(clients.get(mid).getName()) > 0) {
+				left = mid + 1;
+			}else {
+				return clients.get(mid);
+			}
+		}
+		
+		
+		return null;
+	}
+	
 	
 }

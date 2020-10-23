@@ -9,6 +9,8 @@ import model.Restaurant;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Scanner;
 import exceptions.DiferentRestaurantException;
 import exceptions.EmptyClientListException;
@@ -198,7 +200,14 @@ public class Menu {
 			break;
 		
 		case 9:
-			//runOptionNine();
+			try {
+				runOptionNine();
+			} catch (NumberFormatException numberFormatException) {
+				System.err.println("**********************************************");
+				System.err.println("id number invalid, please try a valid id number");
+				pressAnyKeyToContinue();
+			}
+			
 			break;
 		case EXIT:
 			System.out.println(ASTERISKS);
@@ -883,6 +892,31 @@ public class Menu {
 		}
 		
 		 
+	}
+	
+	private void runOptionNine() throws NumberFormatException{
+
+		Comparator<Client> clientNameComparator = new Comparator<Client>(){
+			public int compare(Client clientOne, Client clientTwo) {
+				int comp = 0;
+				comp = clientOne.getName().compareToIgnoreCase( clientTwo.getName() );
+				return comp;
+			}
+		};
+		Collections.sort(manager.getClients(), clientNameComparator);
+		System.out.println("Enter the clients name:");
+		String name = in.nextLine();
+		System.out.println("Searching for client...");
+		long start = System.currentTimeMillis();
+		Client client = manager.searchClient(name);
+		long finish = System.currentTimeMillis();
+		if (client != null) {
+			System.out.println("-" + client.getName() + " " + client.getLastname() + " - id:" + client.getIdNumber() + "." );
+			System.out.println("Time to find: " + (finish - start) + "miliseconds");
+		}else {
+			System.out.println("Culdnt find a client with the given name: " + name);
+		}
+		
 	}
 	
 	
