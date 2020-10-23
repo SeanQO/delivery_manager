@@ -57,8 +57,8 @@ public class Delivery implements Serializable{
 		return deliveryCode;
 	}
 
-	public String getDateAndTime() {
-		return date.toString();
+	public Date getDate() {
+		return date;
 	}
 
 	public String getClientId() {

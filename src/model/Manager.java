@@ -12,6 +12,7 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 
 public class Manager implements Serializable{
 	
@@ -50,6 +51,9 @@ public class Manager implements Serializable{
 	}
 	
 	public void exportDeliveryReport(String fileName, String separator) throws FileNotFoundException {
+		
+		sortDeliveries();
+		
 		PrintWriter pWriter = new PrintWriter(fileName);
 		
 		pWriter.println("[DelyveryCode]" + separator + "[delivery date and time]"  + separator + "[Delivery State]" + separator + 
@@ -62,7 +66,7 @@ public class Manager implements Serializable{
 			
 			//delivery
 			pWriter.print(delivery.getDeliveryCode() + separator);
-			pWriter.print(delivery.getDateAndTime() + separator);
+			pWriter.print(delivery.getDate().toString() + separator);
 			pWriter.print(delivery.getOrderState() + separator);
 			//restaurant
 			Restaurant restaurant = getRestaurant( delivery.getRestaurantNit() );
@@ -70,7 +74,7 @@ public class Manager implements Serializable{
 			pWriter.print(restaurant.getNit() + separator);
 			//client
 			Client client = getClient( delivery.getClientId() );
-			pWriter.print(client.getIdNumber() + separator);
+			pWriter.print(client.getName() + separator);
 			pWriter.print(client.getIdNumber() + separator);
 			pWriter.print(client.getAdress() + separator);
 			//Product
@@ -86,6 +90,27 @@ public class Manager implements Serializable{
 			
 		}
 		pWriter.close();
+	}
+	
+	public void sortDeliveries() {
+		Comparator<Delivery> deliveryComparator = new Comparator<Delivery>() {
+			public int compare(Delivery deliveryOne, Delivery deliveryTwo) {
+				int comp = 0;
+				comp =  - Integer.parseInt(deliveryOne.getRestaurantNit()) - Integer.parseInt( deliveryTwo.getRestaurantNit());
+				if(comp == 0) {
+					long document = Long.parseLong(deliveryOne.getClientId()) - Long.parseLong( deliveryTwo.getClientId() );
+					comp = (document > 0) ? 1 : ((document < 0) ? -1 : 0 );
+					if (comp == 0) {
+						comp = - deliveryOne.getDate().compareTo(deliveryTwo.getDate());
+					}
+				}
+				
+				return comp;
+			}
+		}; 
+		
+		Collections.sort(deliveries, deliveryComparator);
+		
 	}
 	
 	public void importClientsData(String fileName) throws IOException{

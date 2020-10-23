@@ -46,7 +46,7 @@ public class Menu {
 			System.err.println("Problem loading the saved data.\nIf its the first time running the program, IGNORE this message.");
 
 		}catch (IOException ioException) {
-			System.err.println("Problem loading the saved data.\nIf its the first time running the program, IGNORE this message.");
+			System.err.println("Problem loading the saved data.\nIf its the first time running the program or any information hasnt been added, IGNORE this message.");
 		}
 		
 		do {
