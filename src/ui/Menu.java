@@ -21,7 +21,7 @@ import exceptions.InvalidNitException;
 import exceptions.InvalidOptionException;
 
 public class Menu {
-	private final static int EXIT = 10;
+	private final static int EXIT = 11;
 	private static String ASTERISKS = "*****************";	
 	private Scanner in; 
 	private Manager manager;
@@ -83,7 +83,8 @@ public class Menu {
 		System.out.println("7. Export delivery report.");
 		System.out.println("8. import data");
 		System.out.println("9. Search client");
-		System.out.println("10. Exit.");
+		System.out.println("10. Show restaurants");
+		System.out.println("11. Exit.");
 	}
 
 	private boolean runOptions(int option) throws NumberFormatException{
@@ -200,15 +201,11 @@ public class Menu {
 			break;
 		
 		case 9:
-			try {
 				runOptionNine();
-			} catch (NumberFormatException numberFormatException) {
-				System.err.println("**********************************************");
-				System.err.println("id number invalid, please try a valid id number");
-				pressAnyKeyToContinue();
-			}
-			
 			break;
+		case 10:
+			runOptionTen();
+		break;
 		case EXIT:
 			System.out.println(ASTERISKS);
 			System.out.println("*Program finished*");
@@ -917,8 +914,16 @@ public class Menu {
 			System.out.println("Culdnt find a client with the given name: " + name);
 		}
 		
+		Collections.sort(manager.getClients());
 	}
-	
-	
+
+	private void runOptionTen() {
+		System.out.println(ASTERISKS);
+		System.out.println("Restaurant sorted list:\n\n");
+		for (Restaurant restaurant : manager.getRestaurants()) {
+			System.out.println("- " + restaurant.getName() + " Nit: " + restaurant.getNit());
+		}
+		pressAnyKeyToContinue();
+	}
 	
 }

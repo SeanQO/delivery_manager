@@ -2,7 +2,7 @@ package model;
 
 import java.io.Serializable;
 
-public class Restaurant implements Serializable{
+public class Restaurant implements Serializable, Comparable<Restaurant>{
 	
 	private static final long serialVersionUID = 1;
 	
@@ -50,6 +50,10 @@ public class Restaurant implements Serializable{
 		return "Restaurant [name=" + name + ", nit=" + nit + ", adminName=" + adminName + "]";
 	}
 
-	
+	@Override
+	public int compareTo(Restaurant otherRestaurant) {
+		int comp = name.compareToIgnoreCase(otherRestaurant.getName());
+		return comp;
+	}
 	
 }

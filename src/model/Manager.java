@@ -162,7 +162,22 @@ public class Manager implements Serializable{
 	
 	
 	public ArrayList<Restaurant> getRestaurants() {
+		sortRestaurants();
 		return restaurants;
+	}
+	
+	public void sortRestaurants() {
+	    Restaurant temp = null;
+	    for(int i = 0; i < restaurants.size() ; i++){
+	      for(int j = 0; j < (restaurants.size() - 1 - i) ; j++){
+	        if(restaurants.get(j).compareTo(restaurants.get(j+1)) > 0){
+	          temp = restaurants.get(j);
+	          restaurants.set(j, restaurants.get(j+1));
+	          restaurants.set(j+1, temp);
+	        }
+
+	      }
+	    }
 	}
 	
 	public Restaurant getRestaurant (String resNit) {
