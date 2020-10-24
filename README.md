@@ -11,3 +11,6 @@ This project is a system of deliveries designed to unify the delivery data of di
 - Option nine, allows to search efficiently a client by a given name, first sorting the clients list by name using comparator (in menu option). [added option in ui menu](src\ui\Menu.java) / [search client method in model manager](src\model\Manager.java)
 - Option ten, shows a list of all the registered/imported restaurants sorted by name using comparable, and sorting with bouble sorting method. [sort restaurant method](src\model\Manager.java)
 - Option eleven, Shows a list of all the registered/imported clients sorted by phone number using comparable, and sorting with selection sorting method.[sort clients by phone number](src\model\Manager.java)
+- Added clients test implemented, to test if a client is added in a correct position (Not adding and sorting). [test](\test\model\AddClientsTest.java)
+- Functional requirements added in documentation. [functional requirements](doc\delivery_manager_documentation.pdf)
+- Added test diagram to the documentation. [test diagram](doc\delivery_manager_documentation.pdf)

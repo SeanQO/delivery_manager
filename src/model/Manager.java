@@ -252,6 +252,8 @@ public class Manager implements Serializable{
 			}else {
 				clients.set(0, client);
 			}
+		}else if(client.compareTo(clients.get(clients.size()-1))  >= 0){
+			clients.add(client);
 		}else {
 			//duplicate last element
 			clients.add(clients.get(clients.size()-1));
@@ -302,7 +304,7 @@ public class Manager implements Serializable{
 	}
 	
 	public Client getClient(String ClientId) {
-		Client client = new Client();
+		Client client = null;
 		for (int i = 0; i < clients.size(); i++) {
 			if (clients.get(i).getIdNumber().equals(ClientId)) {
 				client = clients.get(i);
